@@ -163,6 +163,7 @@ struct ContentView: View {
         if let match = cardFrames.firstIndex(where: {
             $0.contains(location)
         }) {
+            print("hello")
             print(cardAnswer)
             print(self.cardInfo.info[questionNumber].rightAnswer)
             switch match {
