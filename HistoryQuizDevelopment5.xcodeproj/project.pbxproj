@@ -28,6 +28,7 @@
 		8E420CEF24046C2D00634591 /* ScreenDimension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CEE24046C2D00634591 /* ScreenDimension.swift */; };
 		8E420CF124046C3300634591 /* PlaySound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CF024046C3300634591 /* PlaySound.swift */; };
 		8E420CF424046C3800634591 /* music_harp_gliss_up.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E420CF324046C3800634591 /* music_harp_gliss_up.wav */; };
+		8E420D35240860FB00634591 /* Error Warning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D34240860FB00634591 /* Error Warning.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		8E420CEE24046C2D00634591 /* ScreenDimension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenDimension.swift; sourceTree = "<group>"; };
 		8E420CF024046C3300634591 /* PlaySound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySound.swift; sourceTree = "<group>"; };
 		8E420CF324046C3800634591 /* music_harp_gliss_up.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = music_harp_gliss_up.wav; sourceTree = "<group>"; };
+		8E420D34240860FB00634591 /* Error Warning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Error Warning.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				8E420CF324046C3800634591 /* music_harp_gliss_up.wav */,
+				8E420D34240860FB00634591 /* Error Warning.wav */,
 			);
 			path = sounds;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				8E420CB624046BAB00634591 /* Preview Assets.xcassets in Resources */,
 				8E420CB324046BAB00634591 /* Assets.xcassets in Resources */,
 				8E420CE124046BFD00634591 /* Eras.plist in Resources */,
+				8E420D35240860FB00634591 /* Error Warning.wav in Resources */,
 				8E420CF424046C3800634591 /* music_harp_gliss_up.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,46 +12,56 @@ struct FontsAndConstraintsOptions {
     let multiplierConstraint: CGFloat
     let fontDimension: CGFloat
     let smallFontDimension: CGFloat
+    let finalBigFont: CGFloat
     init() {
         let screenSize = UIScreen.main.bounds
         let surfaceScreen = screenSize.width * screenSize.height
         var multiplier = CGFloat()
         var screenType = ScreenDimension.iPhone5
         var localFont: CGFloat = 0
+        var bigFont:CGFloat = 0
         var smallLocalFont: CGFloat = 0
         if surfaceScreen < 200000 {
             smallLocalFont = 8
             localFont = 10
+            bigFont = 14
             multiplier = 0.52
         }else if surfaceScreen > 200000 && surfaceScreen < 304600 {
             screenType = .iPhone6
              smallLocalFont = 9
             localFont = 11
+            bigFont = 20
             multiplier = 0.55
         }else if surfaceScreen > 304600 && surfaceScreen < 350000 {
             screenType = .iPhone8Plus
             smallLocalFont = 10
             localFont = 14
+            bigFont = 25
              multiplier = 0.55
         }else if surfaceScreen > 350000 && surfaceScreen < 700000 {
             smallLocalFont = 12
             localFont = 16
+            bigFont = 40
             screenType = .iPhoneX
         }else if surfaceScreen > 700000 && surfaceScreen < 800000{
             smallLocalFont = 12
             localFont = 14
+            bigFont = 22
             screenType = .iPad9
             multiplier = 0.6
         }else if surfaceScreen > 800000 && surfaceScreen < 1000000{
             smallLocalFont = 14
             localFont = 16
+            bigFont = 24
             multiplier = 0.6
         }else if surfaceScreen > 1000000{
             smallLocalFont = 20
             localFont = 28
+            bigFont = 30
             screenType = .iPad12
             multiplier = 0.6
         }
+        finalBigFont = bigFont
         smallFontDimension = smallLocalFont
         fontDimension = localFont
         screenDeviceDimension = screenType
