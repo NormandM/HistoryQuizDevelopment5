@@ -29,6 +29,9 @@
 		8E420CF124046C3300634591 /* PlaySound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CF024046C3300634591 /* PlaySound.swift */; };
 		8E420CF424046C3800634591 /* music_harp_gliss_up.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E420CF324046C3800634591 /* music_harp_gliss_up.wav */; };
 		8E420D35240860FB00634591 /* Error Warning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D34240860FB00634591 /* Error Warning.wav */; };
+		8E420D37240998FC00634591 /* TimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D36240998FC00634591 /* TimeLineView.swift */; };
+		8E420D43240C39F200634591 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D42240C39F200634591 /* QuizView.swift */; };
+		8E420D45240D70A600634591 /* QuestionForSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D44240D70A600634591 /* QuestionForSeries.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +80,9 @@
 		8E420CF024046C3300634591 /* PlaySound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaySound.swift; sourceTree = "<group>"; };
 		8E420CF324046C3800634591 /* music_harp_gliss_up.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = music_harp_gliss_up.wav; sourceTree = "<group>"; };
 		8E420D34240860FB00634591 /* Error Warning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Error Warning.wav"; sourceTree = "<group>"; };
+		8E420D36240998FC00634591 /* TimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineView.swift; sourceTree = "<group>"; };
+		8E420D42240C39F200634591 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
+		8E420D44240D70A600634591 /* QuestionForSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionForSeries.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +136,8 @@
 				8E420CA924046BA200634591 /* AppDelegate.swift */,
 				8E420CAB24046BA200634591 /* SceneDelegate.swift */,
 				8E420CB024046BA200634591 /* ContentView.swift */,
+				8E420D36240998FC00634591 /* TimeLineView.swift */,
+				8E420D42240C39F200634591 /* QuizView.swift */,
 				8E420CDE24046BF700634591 /* ColorRefernece.swift */,
 				8E420CDC24046BF000634591 /* Card.swift */,
 				8E420CE024046BFD00634591 /* Eras.plist */,
@@ -137,6 +145,7 @@
 				8E420CE424046C0E00634591 /* Event.swift */,
 				8E420CE624046C1300634591 /* Extensions.swift */,
 				8E420CEA24046C2100634591 /* Question.swift */,
+				8E420D44240D70A600634591 /* QuestionForSeries.swift */,
 				8E420CE824046C1B00634591 /* ScaledFont.swift */,
 				8E420CEC24046C2800634591 /* FontsAndConstraintsOptions.swift */,
 				8E420CEE24046C2D00634591 /* ScreenDimension.swift */,
@@ -323,6 +332,7 @@
 			files = (
 				8E420CAA24046BA200634591 /* AppDelegate.swift in Sources */,
 				8E420CDF24046BF700634591 /* ColorRefernece.swift in Sources */,
+				8E420D43240C39F200634591 /* QuizView.swift in Sources */,
 				8E420CEF24046C2D00634591 /* ScreenDimension.swift in Sources */,
 				8E420CAC24046BA200634591 /* SceneDelegate.swift in Sources */,
 				8E420CE724046C1300634591 /* Extensions.swift in Sources */,
@@ -332,8 +342,10 @@
 				8E420CE924046C1B00634591 /* ScaledFont.swift in Sources */,
 				8E420CE524046C0E00634591 /* Event.swift in Sources */,
 				8E420CAF24046BA200634591 /* HistoryQuizDevelopment5.xcdatamodeld in Sources */,
+				8E420D45240D70A600634591 /* QuestionForSeries.swift in Sources */,
 				8E420CF124046C3300634591 /* PlaySound.swift in Sources */,
 				8E420CED24046C2800634591 /* FontsAndConstraintsOptions.swift in Sources */,
+				8E420D37240998FC00634591 /* TimeLineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

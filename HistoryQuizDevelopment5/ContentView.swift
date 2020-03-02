@@ -26,15 +26,18 @@ struct ContentView: View {
     @State private var cardSelected = false
     @State private var cardDropped = false
     @State private var cardDescription = ""
-     @State var percentComplete: CGFloat = 0.0
+    @State private var nextViewPresent = false
+    @State var percentComplete: CGFloat = 0.0
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
     
     var body: some View {
         NavigationView {
-        
             GeometryReader { geo in
                 VStack() {
+                    NavigationLink(destination: TimeLineView(), isActive: self.$nextViewPresent){
+                        Text("")
+                    }
                     Spacer()
                         .frame(height: 10)
                     HStack {
@@ -49,7 +52,6 @@ struct ContentView: View {
                                     .onAppear{
                                         self.cardFrames[0] = geo2.frame(in: .global)
                                         self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
-                                        print(self.cardInfo.info[self.questionNumber].card0Name)
                                 }
                             })
                             .opacity(self.answerIsGood && self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
@@ -123,15 +125,9 @@ struct ContentView: View {
                                     .animation(.easeOut(duration: 2.0))
                                     .onAppear {
                                         self.percentComplete = 1.0
-                                    }
-                                
-                                
-                                
+                                }
                             }
-                            
                         }
-                        
-                        
                     }
                     HStack {
                         Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 0, text:  self.cardInfo.info[self.questionNumber].trayCard0Name)
@@ -142,11 +138,15 @@ struct ContentView: View {
                             .padding()
                     }
                 }
+
             }
-            .padding()
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
+            
         }
+        //.sheet(isPresented: $nextViewPresent) {
+         //   TimeLineView()
+      // }
         .navigationViewStyle(StackNavigationViewStyle())
     }
     
@@ -172,7 +172,7 @@ struct ContentView: View {
             case 2:
                 if !self.eventTiming.timing[self.questionNumber].eventIsEarlier {
                     answerIsGood = true
-                     playSound(sound: "music_harp_gliss_up", type: "wav")
+                    playSound(sound: "music_harp_gliss_up", type: "wav")
                     withAnimation(Animation.easeInOut(duration: 2.0).delay(1.0)) {
                         self.xOffset2 = centerCardPosition - leftCardPosition
                     }
@@ -202,9 +202,9 @@ struct ContentView: View {
         }
     }
     func cardPushed(location: CGPoint, trayIndex: Int){
-            cardSelected = true
-            cardDescription = self.cardInfo.info[self.questionNumber].trayCardDescription1
-     
+        cardSelected = true
+        cardDescription = self.cardInfo.info[self.questionNumber].trayCardDescription1
+        
     }
     func cardUnpushed(location: CGPoint, trayIndex: Int) {
         cardDescription = ""
@@ -220,6 +220,8 @@ struct ContentView: View {
                 self.xOffset0 = 0
                 self.xOffset2 = 0
                 self.percentComplete = 0
+               // if self.questionNumber == self.eventTiming.timing.count - 1 {self.nextViewPresent = true}
+                if self.questionNumber == 1 {self.nextViewPresent = true}
             }
         }else{
             withAnimation(.linear(duration: 2)) {

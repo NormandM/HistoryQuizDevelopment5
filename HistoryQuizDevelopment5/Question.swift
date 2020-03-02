@@ -18,9 +18,10 @@ struct Sequences  {
 //    let rightAnswer = [19, 14, 10, 16, 6, 3, 9, 4, 7, 13]
     let sequence = [[0, 0, 4], [3, 4, 4], [2, 3, 3], [2, 2, 6], [5,6,6], [5, 5, 8], [7, 8, 8], [7, 7, 10], [10, 10, 11], [9, 11, 11], [9,9,14], [13, 14, 14], [12, 13, 13], [12, 12, 16], [15, 16, 16], [15, 15, 18], [18, 18, 19]]
      let trayCards = [4, 3, 2, 6, 5, 8, 7, 10, 11, 9, 14, 13, 12, 16, 15, 18, 19]
-    let eventIsEarlier = [false, true, true, false, true, false, true, false, false, true, false, true, true,false]
+    let eventIsEarlier = [false, true, true, false, true, false, true, false, false, true, false, true, true,false, true, false, false]
     let rightAnswer = [4, 3, 2, 6, 5, 8, 7, 10, 11, 9, 14, 13, 12, 16, 15, 18, 19]
 }
+
 
 class Info: Identifiable {
     var id: Int
@@ -49,6 +50,7 @@ class Timing: Identifiable {
     init(id: Int) {
         let sequences = Sequences()
         self.id = id
+        print(id)
         eventIsEarlier = sequences.eventIsEarlier[id]
     }
 }
@@ -57,8 +59,10 @@ class CardInfo: ObservableObject {
     @Published var info : [Info]
     
     init() {
+        let sequence = Sequences()
+        let totalNumber = sequence.trayCards.count
         var arrayOfquestions = [Info]()
-        for n in 0...9 {
+        for n in 0...totalNumber - 1 {
             arrayOfquestions.append(Info(id: n))
         }
         self.info = arrayOfquestions
@@ -68,7 +72,9 @@ class EventTiming: ObservableObject {
     @Published var timing : [Timing]
     init() {
         var arrayTiming = [Timing]()
-        for n in 0...9 {
+        let sequence = Sequences()
+        let totalNumber = sequence.trayCards.count
+        for n in 0...totalNumber - 1 {
             arrayTiming.append(Timing(id: n))
         }
         self.timing = arrayTiming
