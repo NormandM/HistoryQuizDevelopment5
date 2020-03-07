@@ -32,6 +32,11 @@
 		8E420D37240998FC00634591 /* TimeLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D36240998FC00634591 /* TimeLineView.swift */; };
 		8E420D43240C39F200634591 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D42240C39F200634591 /* QuizView.swift */; };
 		8E420D45240D70A600634591 /* QuestionForSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D44240D70A600634591 /* QuestionForSeries.swift */; };
+		8E420D4E241059AF00634591 /* InventionsCardData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D4B241059AF00634591 /* InventionsCardData.plist */; };
+		8E420D50241059AF00634591 /* InventionsQuiz.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D4D241059AF00634591 /* InventionsQuiz.plist */; };
+		8E420D5324105A3400634591 /* Seuquence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D5224105A3400634591 /* Seuquence.swift */; };
+		8E420D5C241197E600634591 /* InventionsSequence.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D5B241197E600634591 /* InventionsSequence.plist */; };
+		8E420D602411A08E00634591 /* QuizData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D5F2411A08E00634591 /* QuizData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +88,11 @@
 		8E420D36240998FC00634591 /* TimeLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLineView.swift; sourceTree = "<group>"; };
 		8E420D42240C39F200634591 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizView.swift; sourceTree = "<group>"; };
 		8E420D44240D70A600634591 /* QuestionForSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionForSeries.swift; sourceTree = "<group>"; };
+		8E420D4B241059AF00634591 /* InventionsCardData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InventionsCardData.plist; sourceTree = "<group>"; };
+		8E420D4D241059AF00634591 /* InventionsQuiz.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InventionsQuiz.plist; sourceTree = "<group>"; };
+		8E420D5224105A3400634591 /* Seuquence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seuquence.swift; sourceTree = "<group>"; };
+		8E420D5B241197E600634591 /* InventionsSequence.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InventionsSequence.plist; sourceTree = "<group>"; };
+		8E420D5F2411A08E00634591 /* QuizData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,22 +145,12 @@
 			children = (
 				8E420CA924046BA200634591 /* AppDelegate.swift */,
 				8E420CAB24046BA200634591 /* SceneDelegate.swift */,
-				8E420CB024046BA200634591 /* ContentView.swift */,
-				8E420D36240998FC00634591 /* TimeLineView.swift */,
-				8E420D42240C39F200634591 /* QuizView.swift */,
-				8E420CDE24046BF700634591 /* ColorRefernece.swift */,
-				8E420CDC24046BF000634591 /* Card.swift */,
-				8E420CE024046BFD00634591 /* Eras.plist */,
-				8E420CE224046C0300634591 /* Revolutions.plist */,
-				8E420CE424046C0E00634591 /* Event.swift */,
-				8E420CE624046C1300634591 /* Extensions.swift */,
-				8E420CEA24046C2100634591 /* Question.swift */,
-				8E420D44240D70A600634591 /* QuestionForSeries.swift */,
-				8E420CE824046C1B00634591 /* ScaledFont.swift */,
-				8E420CEC24046C2800634591 /* FontsAndConstraintsOptions.swift */,
-				8E420CEE24046C2D00634591 /* ScreenDimension.swift */,
-				8E420CF024046C3300634591 /* PlaySound.swift */,
+				8E420D51241059D800634591 /* ContentView */,
+				8E420D5E2411A04C00634591 /* TimeLineView */,
+				8E420D5D2411A01900634591 /* QuizView */,
+				8E420D5424105A5900634591 /* Format */,
 				8E420CF224046C3800634591 /* sounds */,
+				8E420D46241052FB00634591 /* Plists */,
 				8E420CB224046BAB00634591 /* Assets.xcassets */,
 				8E420CB724046BAB00634591 /* LaunchScreen.storyboard */,
 				8E420CBA24046BAB00634591 /* Info.plist */,
@@ -189,10 +189,65 @@
 		8E420CF224046C3800634591 /* sounds */ = {
 			isa = PBXGroup;
 			children = (
+				8E420CF024046C3300634591 /* PlaySound.swift */,
 				8E420CF324046C3800634591 /* music_harp_gliss_up.wav */,
 				8E420D34240860FB00634591 /* Error Warning.wav */,
 			);
 			path = sounds;
+			sourceTree = "<group>";
+		};
+		8E420D46241052FB00634591 /* Plists */ = {
+			isa = PBXGroup;
+			children = (
+				8E420D4B241059AF00634591 /* InventionsCardData.plist */,
+				8E420D5B241197E600634591 /* InventionsSequence.plist */,
+				8E420D4D241059AF00634591 /* InventionsQuiz.plist */,
+				8E420CE024046BFD00634591 /* Eras.plist */,
+				8E420CE224046C0300634591 /* Revolutions.plist */,
+			);
+			path = Plists;
+			sourceTree = "<group>";
+		};
+		8E420D51241059D800634591 /* ContentView */ = {
+			isa = PBXGroup;
+			children = (
+				8E420CB024046BA200634591 /* ContentView.swift */,
+				8E420CDC24046BF000634591 /* Card.swift */,
+				8E420CE424046C0E00634591 /* Event.swift */,
+				8E420CEA24046C2100634591 /* Question.swift */,
+				8E420D5224105A3400634591 /* Seuquence.swift */,
+			);
+			path = ContentView;
+			sourceTree = "<group>";
+		};
+		8E420D5424105A5900634591 /* Format */ = {
+			isa = PBXGroup;
+			children = (
+				8E420CE824046C1B00634591 /* ScaledFont.swift */,
+				8E420CEC24046C2800634591 /* FontsAndConstraintsOptions.swift */,
+				8E420CE624046C1300634591 /* Extensions.swift */,
+				8E420CDE24046BF700634591 /* ColorRefernece.swift */,
+				8E420CEE24046C2D00634591 /* ScreenDimension.swift */,
+			);
+			path = Format;
+			sourceTree = "<group>";
+		};
+		8E420D5D2411A01900634591 /* QuizView */ = {
+			isa = PBXGroup;
+			children = (
+				8E420D42240C39F200634591 /* QuizView.swift */,
+				8E420D5F2411A08E00634591 /* QuizData.swift */,
+			);
+			path = QuizView;
+			sourceTree = "<group>";
+		};
+		8E420D5E2411A04C00634591 /* TimeLineView */ = {
+			isa = PBXGroup;
+			children = (
+				8E420D36240998FC00634591 /* TimeLineView.swift */,
+				8E420D44240D70A600634591 /* QuestionForSeries.swift */,
+			);
+			path = TimeLineView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -302,10 +357,13 @@
 				8E420CE324046C0300634591 /* Revolutions.plist in Resources */,
 				8E420CB924046BAB00634591 /* LaunchScreen.storyboard in Resources */,
 				8E420CB624046BAB00634591 /* Preview Assets.xcassets in Resources */,
+				8E420D4E241059AF00634591 /* InventionsCardData.plist in Resources */,
 				8E420CB324046BAB00634591 /* Assets.xcassets in Resources */,
 				8E420CE124046BFD00634591 /* Eras.plist in Resources */,
+				8E420D5C241197E600634591 /* InventionsSequence.plist in Resources */,
 				8E420D35240860FB00634591 /* Error Warning.wav in Resources */,
 				8E420CF424046C3800634591 /* music_harp_gliss_up.wav in Resources */,
+				8E420D50241059AF00634591 /* InventionsQuiz.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,11 +398,13 @@
 				8E420CEB24046C2100634591 /* Question.swift in Sources */,
 				8E420CB124046BA200634591 /* ContentView.swift in Sources */,
 				8E420CE924046C1B00634591 /* ScaledFont.swift in Sources */,
+				8E420D5324105A3400634591 /* Seuquence.swift in Sources */,
 				8E420CE524046C0E00634591 /* Event.swift in Sources */,
 				8E420CAF24046BA200634591 /* HistoryQuizDevelopment5.xcdatamodeld in Sources */,
 				8E420D45240D70A600634591 /* QuestionForSeries.swift in Sources */,
 				8E420CF124046C3300634591 /* PlaySound.swift in Sources */,
 				8E420CED24046C2800634591 /* FontsAndConstraintsOptions.swift in Sources */,
+				8E420D602411A08E00634591 /* QuizData.swift in Sources */,
 				8E420D37240998FC00634591 /* TimeLineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

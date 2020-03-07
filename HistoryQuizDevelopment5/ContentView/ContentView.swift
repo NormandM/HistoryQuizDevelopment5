@@ -30,6 +30,7 @@ struct ContentView: View {
     @State var percentComplete: CGFloat = 0.0
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
+    let sequence = Sequence()
     
     var body: some View {
         NavigationView {
@@ -52,6 +53,7 @@ struct ContentView: View {
                                     .onAppear{
                                         self.cardFrames[0] = geo2.frame(in: .global)
                                         self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
+                                        print(self.sequence.sequence)
                                 }
                             })
                             .opacity(self.answerIsGood && self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
@@ -82,7 +84,6 @@ struct ContentView: View {
                                     .onAppear{
                                         self.cardFrames[2] = geo2.frame(in: .global)
                                         self.leftCardPosition = geo2.frame(in: .named("LeftCard")).midX
-                                        print(self.cardInfo.info[self.questionNumber].card2Name)
                                 }
                             })
                             .opacity(self.answerIsGood && !self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
@@ -144,9 +145,6 @@ struct ContentView: View {
             .edgesIgnoringSafeArea(.all)
             
         }
-        //.sheet(isPresented: $nextViewPresent) {
-         //   TimeLineView()
-      // }
         .navigationViewStyle(StackNavigationViewStyle())
     }
     
@@ -162,7 +160,6 @@ struct ContentView: View {
                     answerIsGood = true
                     playSound(sound: "music_harp_gliss_up", type: "wav")
                     withAnimation(Animation.easeInOut(duration: 2).delay(1)) {
-                        print(xOffset0)
                         self.xOffset0 = centerCardPosition - rightCardPosition
                     }
                 }else{
@@ -221,7 +218,7 @@ struct ContentView: View {
                 self.xOffset2 = 0
                 self.percentComplete = 0
                // if self.questionNumber == self.eventTiming.timing.count - 1 {self.nextViewPresent = true}
-                if self.questionNumber == 1 {self.nextViewPresent = true}
+               if self.questionNumber == 1 {self.nextViewPresent = true}
             }
         }else{
             withAnimation(.linear(duration: 2)) {

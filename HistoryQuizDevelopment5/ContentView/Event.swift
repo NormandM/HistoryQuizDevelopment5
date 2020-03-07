@@ -16,18 +16,16 @@ struct Event {
     let eventIndex: Int
     init(eventIndex: Int) {
         var allEvents: [[String]]
-        let pListEvent = "Eras"
+        let pListEvent = "InventionsCardData"
         if let plistPath = Bundle.main.path(forResource: pListEvent, ofType: "plist"),
             let transition = NSArray(contentsOfFile: plistPath){
             allEvents = transition as! [[String]]
         }else{
             allEvents = []
         }
-        print(allEvents)
         self.eventIndex = eventIndex
         name = allEvents[eventIndex][1]
         description = allEvents[eventIndex][2]
         date = allEvents[eventIndex][0]
-       // periode = allEvents[eventIndex][3]
     }
 }

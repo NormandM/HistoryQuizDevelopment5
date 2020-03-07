@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+    <array>
+          <string>Control of Fire by Early Humans</string>
+          <string>400000 BC</string>
+    </array>
+    <array>
+          <string>The invention of the wheel</string>
+          <string>3500 BC</string>
+    </array>
+    <array>
+          <string> The earliest known writing system: The Cuneiform script</string>
+          <string>3400 BC</string>
+    </array>
+    <array>
+          <string>The oldest verified alphabet: The Phoenician alphabet</string>
+          <string>2000 BC</string>
+    </array>
+    <array>
+          <string>Birth of  the Inventor of the Digit Zero: Aryabhata</string>
+          <string>476 AD</string>
+    </array>
+    <array>
+          <string>The chinese invention of the gunpowder</string>
+          <string>800 AD</string>
+    </array>
+</array>
+</plist>
