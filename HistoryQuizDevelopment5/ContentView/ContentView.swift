@@ -31,7 +31,33 @@ struct ContentView: View {
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
     let sequence = Sequence()
-    
+    init() {
+        // this is not the same as manipulating the proxy directly
+        let appearance = UINavigationBarAppearance()
+        
+        // this overrides everything you have set up earlier.
+        appearance.configureWithTransparentBackground()
+        
+        // this only applies to big titles
+        appearance.largeTitleTextAttributes = [
+            .font : UIFont.systemFont(ofSize: 20),
+            NSAttributedString.Key.foregroundColor : UIColor.white
+        ]
+        // this only applies to small titles
+        appearance.titleTextAttributes = [
+            .font : UIFont.systemFont(ofSize: 30),
+            NSAttributedString.Key.foregroundColor : UIColor.white
+        ]
+        
+        //In the following two lines you make sure that you apply the style for good
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().standardAppearance = appearance
+        
+        // This property is not present on the UINavigationBarAppearance
+        // object for some reason and you have to leave it til the end
+        UINavigationBar.appearance().tintColor = .white
+        
+    }
     var body: some View {
         NavigationView {
             GeometryReader { geo in
@@ -39,8 +65,48 @@ struct ContentView: View {
                     NavigationLink(destination: TimeLineView(), isActive: self.$nextViewPresent){
                         Text("")
                     }
-                    Spacer()
-                        .frame(height: 10)
+    
+                    HStack {
+                        ZStack {
+                            Text(self.cardDescription)
+                                .lineLimit(100)
+                                .scaledFont(name: "Helvetica Neue", size: self.fonts.fontDimension)
+                                .foregroundColor(.black)
+                                .padding()
+                                .frame(width: geo.size.width/1.0
+                                    , height: geo.size.height/7.0
+                            )
+                                .border(Color.white)
+                                .background(ColorReference.specialGray)
+                                .cornerRadius(20)
+                                .padding()
+                            if self.answerIsGood && self.cardDropped{
+                                Text("Great!")
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                    .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialGreen : .clear)
+                                Ellipse()
+                                    .trim(from: 0, to: self.percentComplete)
+                                    .stroke( ColorReference.specialGreen, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
+                                    .animation(.easeOut(duration: 2.0))
+                                    .onAppear {
+                                        self.percentComplete = 1.0
+                                }
+                            }else if !self.answerIsGood && self.cardDropped {
+                                Text("Sorry...")
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                    .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialRed : .clear)
+                                Ellipse()
+                                    .trim(from: 0, to: self.percentComplete)
+                                    .stroke( ColorReference.specialRed, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
+                                    .animation(.easeOut(duration: 2.0))
+                                    .onAppear {
+                                        self.percentComplete = 1.0
+                                }
+                            }
+                        }
+                    }
                     HStack {
                         Card(onEnded: self.cardDropped, index: 0, text: self.cardInfo.info[self.questionNumber].card0Name)
                             .frame(width: geo.size.height/5 * 0.6
@@ -90,46 +156,7 @@ struct ContentView: View {
                             .offset(x: self.answerIsGood && self.cardSelected ? self.xOffset2 : self.badAnsweOffset)
                             .addBorder(!self.answerIsGood ? Color.white : Color.clear, cornerRadius: 10)
                     }
-                    HStack {
-                        ZStack {
-                            Text(self.cardDescription)
-                                .lineLimit(100)
-                                .scaledFont(name: "Helvetica Neue", size: self.fonts.fontDimension)
-                                .foregroundColor(.black)
-                                .padding()
-                                .frame(width: geo.size.width/1.0, height: geo.size.height/3.2
-                            )
-                                .border(Color.white)
-                                .background(ColorReference.specialGray)
-                                .cornerRadius(20)
-                                .padding()
-                            if self.answerIsGood && self.cardDropped{
-                                Text("Great!")
-                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
-                                    .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialGreen : .clear)
-                                Ellipse()
-                                    .trim(from: 0, to: self.percentComplete)
-                                    .stroke( ColorReference.specialGreen, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
-                                    .animation(.easeOut(duration: 2.0))
-                                    .onAppear {
-                                        self.percentComplete = 1.0
-                                }
-                            }else if !self.answerIsGood && self.cardDropped {
-                                Text("Sorry...")
-                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
-                                    .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialRed : .clear)
-                                Ellipse()
-                                    .trim(from: 0, to: self.percentComplete)
-                                    .stroke( ColorReference.specialRed, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
-                                    .animation(.easeOut(duration: 2.0))
-                                    .onAppear {
-                                        self.percentComplete = 1.0
-                                }
-                            }
-                        }
-                    }
+
                     HStack {
                         Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 0, text:  self.cardInfo.info[self.questionNumber].trayCard0Name)
                             .frame(width: geo.size.height/5 * 0.6
@@ -138,13 +165,74 @@ struct ContentView: View {
                             .offset(x: self.answerIsGood && self.cardSelected   ? 0.0 : self.badAnsweOffset)
                             .padding()
                     }
-                }
+                    .padding()
+                    ZStack{
+                        Rectangle()
+                            .fill(ColorReference.specialGray)
+                            .frame(width: geo.size.width, height: geo.size.height/7)
+                        HStack(alignment: .bottom){
+                            Spacer()
+                            VStack{
+                                ZStack{
+                                    Circle()
+                                         .foregroundColor(ColorReference.mixedOrange)
+                                    .frame(width: geo.size.height/12
+                                        , height: geo.size.height/12)
+                                       
+                                    
+                                    Text("10")
+                                        .background(ColorReference.mixedOrange)
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                             
+                                    
+                                }
+                                       Text("Time left")
 
+                            }
+                            Spacer()
+                            VStack {
+                                Button(action: {
+                                    print()
+                                }){
+                                    Image("GreenCoin").renderingMode(.original)
+                                    .resizable()
+                                    .frame(width: geo.size.height/12
+                                        , height: geo.size.height/12)
+                                }
+                                Text("Buy Coins")
+                            }
+                            Spacer()
+                           VStack{
+                                ZStack{
+                                    Circle()
+                                         .foregroundColor(ColorReference.mixedOrange)
+                                    .frame(width: geo.size.height/12
+                                        , height: geo.size.height/12)
+                                       
+                                    
+                                    Text("10")
+                                        .background(ColorReference.mixedOrange)
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                             
+                                    
+                                }
+                                       Text("Score")
+
+                            }
+                            Spacer()
+                        
+                        }
+                        
+                    }
+
+                }
             }
+            
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
-            
+            .navigationBarTitle("Earlier or Later?", displayMode: .inline)
         }
+    
         .navigationViewStyle(StackNavigationViewStyle())
     }
     

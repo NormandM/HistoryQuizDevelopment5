@@ -100,7 +100,10 @@ struct TimeLineView: View {
             }
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
-        }.navigationBarBackButtonHidden(true)
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationViewStyle(StackNavigationViewStyle())
+        
     }
     func cardDropped(location: CGPoint, trayIndex: Int, cardAnswer: String) {
         if let match = cardFrames.firstIndex(where: {
