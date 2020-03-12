@@ -30,18 +30,18 @@ struct FontsAndConstraintsOptions {
             screenType = .iPhone6
              smallLocalFont = 9
             localFont = 11
-            bigFont = 20
+            bigFont = 18
             multiplier = 0.55
         }else if surfaceScreen > 304600 && surfaceScreen < 350000 {
             screenType = .iPhone8Plus
             smallLocalFont = 10
             localFont = 14
-            bigFont = 25
+            bigFont = 20
              multiplier = 0.55
         }else if surfaceScreen > 350000 && surfaceScreen < 700000 {
             smallLocalFont = 12
             localFont = 16
-            bigFont = 40
+            bigFont = 30
             screenType = .iPhoneX
         }else if surfaceScreen > 700000 && surfaceScreen < 800000{
             smallLocalFont = 12

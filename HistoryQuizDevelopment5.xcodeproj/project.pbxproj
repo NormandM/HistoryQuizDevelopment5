@@ -37,6 +37,7 @@
 		8E420D5324105A3400634591 /* Seuquence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D5224105A3400634591 /* Seuquence.swift */; };
 		8E420D5C241197E600634591 /* InventionsSequence.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8E420D5B241197E600634591 /* InventionsSequence.plist */; };
 		8E420D602411A08E00634591 /* QuizData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420D5F2411A08E00634591 /* QuizData.swift */; };
+		8E8A6993241ADCD50027C372 /* Incoming Text 01.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E8A6992241ADCD40027C372 /* Incoming Text 01.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		8E420D5224105A3400634591 /* Seuquence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seuquence.swift; sourceTree = "<group>"; };
 		8E420D5B241197E600634591 /* InventionsSequence.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = InventionsSequence.plist; sourceTree = "<group>"; };
 		8E420D5F2411A08E00634591 /* QuizData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizData.swift; sourceTree = "<group>"; };
+		8E8A6992241ADCD40027C372 /* Incoming Text 01.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Incoming Text 01.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				8E420CF024046C3300634591 /* PlaySound.swift */,
+				8E8A6992241ADCD40027C372 /* Incoming Text 01.wav */,
 				8E420CF324046C3800634591 /* music_harp_gliss_up.wav */,
 				8E420D34240860FB00634591 /* Error Warning.wav */,
 			);
@@ -357,6 +360,7 @@
 				8E420CE324046C0300634591 /* Revolutions.plist in Resources */,
 				8E420CB924046BAB00634591 /* LaunchScreen.storyboard in Resources */,
 				8E420CB624046BAB00634591 /* Preview Assets.xcassets in Resources */,
+				8E8A6993241ADCD50027C372 /* Incoming Text 01.wav in Resources */,
 				8E420D4E241059AF00634591 /* InventionsCardData.plist in Resources */,
 				8E420CB324046BAB00634591 /* Assets.xcassets in Resources */,
 				8E420CE124046BFD00634591 /* Eras.plist in Resources */,

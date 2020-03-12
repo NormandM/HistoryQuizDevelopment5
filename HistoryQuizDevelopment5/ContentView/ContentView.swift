@@ -27,7 +27,13 @@ struct ContentView: View {
     @State private var cardDropped = false
     @State private var cardDescription = ""
     @State private var nextViewPresent = false
-    @State var percentComplete: CGFloat = 0.0
+    @State private var percentComplete: CGFloat = 0.0
+    @State private var tryAgain = false
+    @State private var timeRemaining = 120
+    @State private var quizStarted = false
+    @State private var messageAfterAnswer = ""
+    @State private var firstLevelFinished = false
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
     let sequence = Sequence()
@@ -61,6 +67,11 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             GeometryReader { geo in
+                ZStack {
+                    Image("success")
+                    .resizable()
+                        .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
+                        .opacity(self.firstLevelFinished ? 1.0 : 0.0)
                 VStack() {
                     NavigationLink(destination: TimeLineView(), isActive: self.$nextViewPresent){
                         Text("")
@@ -70,36 +81,35 @@ struct ContentView: View {
                         ZStack {
                             Text(self.cardDescription)
                                 .lineLimit(100)
-                                .scaledFont(name: "Helvetica Neue", size: self.fonts.fontDimension)
+                                .scaledFont(name: "Helvetica Neue", size: self.getFont(tryAgain: self.tryAgain))
                                 .foregroundColor(.black)
                                 .padding()
                                 .frame(width: geo.size.width/1.0
                                     , height: geo.size.height/7.0
                             )
-                                .border(Color.white)
                                 .background(ColorReference.specialGray)
                                 .cornerRadius(20)
                                 .padding()
                             if self.answerIsGood && self.cardDropped{
-                                Text("Great!")
+                                Text(self.messageAfterAnswer)
                                     .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                     .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialGreen : .clear)
                                 Ellipse()
                                     .trim(from: 0, to: self.percentComplete)
-                                    .stroke( ColorReference.specialGreen, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
+                                    .stroke( ColorReference.specialGreen, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                                    .frame(width: geo.size.height/8.0, height:  geo.size.height/8.0)
                                     .animation(.easeOut(duration: 2.0))
                                     .onAppear {
                                         self.percentComplete = 1.0
                                 }
                             }else if !self.answerIsGood && self.cardDropped {
-                                Text("Sorry...")
+                                Text(self.messageAfterAnswer)
                                     .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                     .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialRed : .clear)
                                 Ellipse()
                                     .trim(from: 0, to: self.percentComplete)
-                                    .stroke( ColorReference.specialRed, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                                    .frame(width: geo.size.height/4, height:  geo.size.height/4)
+                                    .stroke( ColorReference.specialRed, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                                    .frame(width: geo.size.height/8, height:  geo.size.height/8)
                                     .animation(.easeOut(duration: 2.0))
                                     .onAppear {
                                         self.percentComplete = 1.0
@@ -137,7 +147,7 @@ struct ContentView: View {
                                         self.centerCardPosition = geo2.frame(in: .named("CenterCard")).midX
                                 }
                             })
-                            .offset(y: self.answerIsGood && self.cardSelected   ? 0 : -self.badAnsweOffset)
+                            .offset(x: self.answerIsGood && self.cardSelected   ? 0 : self.badAnsweOffset)
                             .padding()
                         
                         Card(onEnded: self.cardDropped, index: 2, text:  self.cardInfo.info[self.questionNumber].card2Name)
@@ -175,13 +185,19 @@ struct ContentView: View {
                             VStack{
                                 ZStack{
                                     Circle()
-                                         .foregroundColor(ColorReference.mixedOrange)
+                                         .foregroundColor(ColorReference.specialOrange)
+                                        
+
                                     .frame(width: geo.size.height/12
                                         , height: geo.size.height/12)
-                                       
-                                    
-                                    Text("10")
-                                        .background(ColorReference.mixedOrange)
+                                        
+                                    Text("\(self.timeRemaining)")
+                                        .onReceive(self.timer) { _ in
+                                            if self.timeRemaining  > 0 && self.quizStarted {
+                                                self.timeRemaining -= 1
+                                            }
+                                        }
+                                        .background(ColorReference.specialOrange)
                                         .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                              
                                     
@@ -194,7 +210,7 @@ struct ContentView: View {
                                 Button(action: {
                                     print()
                                 }){
-                                    Image("GreenCoin").renderingMode(.original)
+                                    Image("FinalCoin").renderingMode(.original)
                                     .resizable()
                                     .frame(width: geo.size.height/12
                                         , height: geo.size.height/12)
@@ -205,13 +221,13 @@ struct ContentView: View {
                            VStack{
                                 ZStack{
                                     Circle()
-                                         .foregroundColor(ColorReference.mixedOrange)
+                                         .foregroundColor(ColorReference.specialOrange)
                                     .frame(width: geo.size.height/12
                                         , height: geo.size.height/12)
                                        
                                     
                                     Text("10")
-                                        .background(ColorReference.mixedOrange)
+                                        .background(ColorReference.specialOrange)
                                         .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                              
                                     
@@ -225,14 +241,16 @@ struct ContentView: View {
                         
                     }
 
+                }.blur(radius: self.firstLevelFinished ?  75 : 0.0)
+                    
                 }
             }
             
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
             .navigationBarTitle("Earlier or Later?", displayMode: .inline)
+
         }
-    
         .navigationViewStyle(StackNavigationViewStyle())
     }
     
@@ -246,7 +264,7 @@ struct ContentView: View {
             case 0:
                 if  self.eventTiming.timing[self.questionNumber].eventIsEarlier{
                     answerIsGood = true
-                    playSound(sound: "music_harp_gliss_up", type: "wav")
+                    playSound(sound: "Incoming Text 01", type: "wav")
                     withAnimation(Animation.easeInOut(duration: 2).delay(1)) {
                         self.xOffset0 = centerCardPosition - rightCardPosition
                     }
@@ -257,7 +275,7 @@ struct ContentView: View {
             case 2:
                 if !self.eventTiming.timing[self.questionNumber].eventIsEarlier {
                     answerIsGood = true
-                    playSound(sound: "music_harp_gliss_up", type: "wav")
+                    playSound(sound: "Incoming Text 01", type: "wav")
                     withAnimation(Animation.easeInOut(duration: 2.0).delay(1.0)) {
                         self.xOffset2 = centerCardPosition - leftCardPosition
                     }
@@ -287,6 +305,8 @@ struct ContentView: View {
         }
     }
     func cardPushed(location: CGPoint, trayIndex: Int){
+        quizStarted = true
+        tryAgain = false
         cardSelected = true
         cardDescription = self.cardInfo.info[self.questionNumber].trayCardDescription1
         
@@ -296,6 +316,7 @@ struct ContentView: View {
     }
     func cardAnimation () {
         if answerIsGood {
+            self.messageAfterAnswer = "Great!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 self.questionNumber = self.questionNumber + 1
                 self.answerIsGood = false
@@ -305,10 +326,18 @@ struct ContentView: View {
                 self.xOffset0 = 0
                 self.xOffset2 = 0
                 self.percentComplete = 0
-               // if self.questionNumber == self.eventTiming.timing.count - 1 {self.nextViewPresent = true}
-               if self.questionNumber == 1 {self.nextViewPresent = true}
+                if self.questionNumber == self.eventTiming.timing.count - 1 {
+                    self.firstLevelFinished = true
+                    playSound(sound: "music_harp_gliss_up", type: "wav")
+                    self.timer.upstream.connect().cancel()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                        self.nextViewPresent = true
+                    }
+                }
+              // if self.questionNumber == 1 {self.nextViewPresent = true}
             }
         }else{
+            self.messageAfterAnswer = "Sorry..."
             withAnimation(.linear(duration: 2)) {
                 self.badAnsweOffset = 500
             }
@@ -320,9 +349,23 @@ struct ContentView: View {
                 self.badAnsweOffset = 0
                 self.xOffset0 = 0
                 self.xOffset2 = 0
+                self.tryAgain = true
+                self.quizStarted = false
+                self.timeRemaining = 120
+                self.cardDescription = "Try Again!"
             }
         }
     }
+    func getFont(tryAgain: Bool) -> CGFloat {
+        if tryAgain {
+            print("getting fonts")
+            return fonts.finalBigFont
+        }else{
+            return fonts.fontDimension
+        }
+        
+    }
+
 }
 
 struct ContentView_Previews: PreviewProvider {
