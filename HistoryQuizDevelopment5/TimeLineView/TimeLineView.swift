@@ -21,18 +21,59 @@ struct TimeLineView: View {
     @State private var cardIsBeingMoved = [true, true, true, true]
     @State private var count = 0
     @State private var cardIndex = 0
+    @State private var timeRemaining = 120
+    @State private var quizStarted = false
+    @State private var coins = UserDefaults.standard.integer(forKey: "coins")
+    @State private var points = UserDefaults.standard.integer(forKey: "points")
+    let timer = Timer.publish(every: 1, on: .main, in: .default).autoconnect()
+    @State private var timer0 = false
     @ObservedObject var questionForSeries = QuestionsForSeries()
+    init() {
+           // this is not the same as manipulating the proxy directly
+           let appearance = UINavigationBarAppearance()
+           // this overrides everything you have set up earlier.
+           appearance.configureWithTransparentBackground()
+           
+//           // this only applies to big titles
+           appearance.largeTitleTextAttributes = [
+               .font : UIFont(name: "Helvetica Neue", size: fonts.fontDimension)!,
+               NSAttributedString.Key.foregroundColor : UIColor.white
+           ]
+           appearance.titleTextAttributes = [
+            .font : UIFont(name: "Helvetica Neue", size: fonts.fontDimension)!,
+               NSAttributedString.Key.foregroundColor : UIColor.white
+           ]
+           //In the following two lines you make sure that you apply the style for good
+           UINavigationBar.appearance().scrollEdgeAppearance = appearance
+           UINavigationBar.appearance().standardAppearance = appearance
+           // This property is not present on the UINavigationBarAppearance
+           // object for some reason and you have to leave it til the end
+           UINavigationBar.appearance().tintColor = .white
+       }
     var body: some View {
         NavigationView {
             GeometryReader { geo in
+                
                 VStack {
                     NavigationLink(destination: QuizView(), isActive: self.$goQuizView){
                         Text("")
                     }
-                    
                     HStack {
-                        ForEach(0..<4) { number in
-                            Card(onEnded: self.cardDropped, index: number, text: self.cardText[number])
+                        Text("Test")
+                            .lineLimit(100)
+                            .scaledFont(name: "Helvetica Neue", size: self.fonts.fontDimension)
+                            .foregroundColor(.black)
+                            .padding()
+                            .frame(width: geo.size.width/1.0, height: geo.size.height/7
+                        )
+                            .border(Color.white)
+                            .background(ColorReference.specialGray)
+                            .cornerRadius(20)
+                            .padding()
+                    }
+                    HStack() {
+                        Spacer()
+                            Card(onEnded: self.cardDropped, index: 0, text: self.cardText[0])
                                 .frame(width: geo.size.height/6 * 0.6
                                     , height: geo.size.height/6)
                                 .allowsHitTesting(false)
@@ -41,15 +82,65 @@ struct TimeLineView: View {
                                         .overlay(GeometryReader { geo2 in
                                             Color.clear
                                                 .onAppear{
-                                                    self.cardFrames[number] = geo2.frame(in: .global)
+                                                    self.cardFrames[0] = geo2.frame(in: .global)
                                             }
                                         })
                                 })
-                                .opacity(self.cardWasDropped[number] ? 1.0 : 0.0)
+                                .opacity(self.cardWasDropped[0] ? 1.0 : 0.0)
                                 .addBorder(Color.white, cornerRadius: 10)
-                        }
+                         Spacer()
+                        Card(onEnded: self.cardDropped, index: 1, text: self.cardText[1])
+                              .frame(width: geo.size.height/6 * 0.6
+                                  , height: geo.size.height/6)
+                              .allowsHitTesting(false)
+                              .overlay(GeometryReader { geo2 in
+                                  Color.clear
+                                      .overlay(GeometryReader { geo2 in
+                                          Color.clear
+                                              .onAppear{
+                                                  self.cardFrames[1] = geo2.frame(in: .global)
+                                          }
+                                      })
+                              })
+                              .opacity(self.cardWasDropped[2] ? 1.0 : 0.0)
+                              .addBorder(Color.white, cornerRadius: 10)
+                         Spacer()
+                        Card(onEnded: self.cardDropped, index: 2, text: self.cardText[2])
+                              .frame(width: geo.size.height/6 * 0.6
+                                  , height: geo.size.height/6)
+                              .allowsHitTesting(false)
+                              .overlay(GeometryReader { geo2 in
+                                  Color.clear
+                                      .overlay(GeometryReader { geo2 in
+                                          Color.clear
+                                              .onAppear{
+                                                  self.cardFrames[2] = geo2.frame(in: .global)
+                                          }
+                                      })
+                              })
+                              .opacity(self.cardWasDropped[3] ? 1.0 : 0.0)
+                              .addBorder(Color.white, cornerRadius: 10)
+                         Spacer()
+                        Card(onEnded: self.cardDropped, index: 3, text: self.cardText[3])
+                              .frame(width: geo.size.height/6 * 0.6
+                                  , height: geo.size.height/6)
+                              .allowsHitTesting(false)
+                              .overlay(GeometryReader { geo2 in
+                                  Color.clear
+                                      .overlay(GeometryReader { geo2 in
+                                          Color.clear
+                                              .onAppear{
+                                                  self.cardFrames[3] = geo2.frame(in: .global)
+                                          }
+                                      })
+                              })
+                              .opacity(self.cardWasDropped[3] ? 1.0 : 0.0)
+                              .addBorder(Color.white, cornerRadius: 10)
+                         Spacer()
+                    
                     }
                     .padding()
+
                     Button(action: {
                         for n in 0...3{
                             self.cardGood[n] = false
@@ -61,26 +152,28 @@ struct TimeLineView: View {
                         
                     }){
                         Text("Start Over")
-                            .padding()
-                    }
-                    .background(Capsule().stroke(lineWidth: 2))
-                    .foregroundColor(.white)
-                    HStack {
-                        Text("Test")
-                            .lineLimit(100)
                             .scaledFont(name: "Helvetica Neue", size: self.fonts.fontDimension)
-                            .foregroundColor(.black)
-                            .padding()
-                            .frame(width: geo.size.width/1.1, height: geo.size.height/3.2
+                        .padding()
+                            .background(ColorReference.specialGreen)
+                        .cornerRadius(40)
+                        .foregroundColor(.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 40)
+                                .stroke(Color.white, lineWidth: 2)
                         )
-                            .border(Color.white)
-                            .background(ColorReference.specialGray)
-                            .cornerRadius(20)
-                            .padding()
                     }
+                 //   .padding()
+        
+//                    .background(
+//
+//                    Capsule()
+//                   //  .frame(width: 100, height: 50)
+//                    .stroke(lineWidth: 2))
+//                    .foregroundColor(.white)
+                    
                     HStack {
-                        ForEach(0..<4) { number in
-                            Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: number, text: self.questionForSeries.trayCardName[number])
+                        Spacer()
+                            Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 0, text: self.questionForSeries.trayCardName[0])
                                 .frame(width: geo.size.height/6 * 0.6
                                     , height: geo.size.height/6)
                                 .overlay(GeometryReader { geo2 in
@@ -88,22 +181,132 @@ struct TimeLineView: View {
                                         .overlay(GeometryReader { geo2 in
                                             Color.clear
                                                 .onAppear{
-                                                    self.trayCardsFrames[number] = geo2.frame(in: .global)
+                                                    self.trayCardsFrames[0] = geo2.frame(in: .global)
                                             }
                                         })
                                 })
-                                .zIndex(self.cardIsBeingMoved[number] ? 1.0 : 0.5)
-                                .opacity(self.trayCardDropped[number] ? 0.0 : 1.0)
-                        }
+                                .zIndex(self.cardIsBeingMoved[0] ? 1.0 : 0.5)
+                                .opacity(self.trayCardDropped[0] ? 0.0 : 1.0)
+                         Spacer()
+                        Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 1, text: self.questionForSeries.trayCardName[1])
+                            .frame(width: geo.size.height/6 * 0.6
+                                , height: geo.size.height/6)
+                            .overlay(GeometryReader { geo2 in
+                                Color.clear
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .onAppear{
+                                                self.trayCardsFrames[1] = geo2.frame(in: .global)
+                                        }
+                                    })
+                            })
+                            .zIndex(self.cardIsBeingMoved[1] ? 1.0 : 0.5)
+                            .opacity(self.trayCardDropped[1] ? 0.0 : 1.0)
+                         Spacer()
+                        Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 2, text: self.questionForSeries.trayCardName[2])
+                            .frame(width: geo.size.height/6 * 0.6
+                                , height: geo.size.height/6)
+                            .overlay(GeometryReader { geo2 in
+                                Color.clear
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .onAppear{
+                                                self.trayCardsFrames[2] = geo2.frame(in: .global)
+                                        }
+                                    })
+                            })
+                            .zIndex(self.cardIsBeingMoved[2] ? 1.0 : 0.5)
+                            .opacity(self.trayCardDropped[2] ? 0.0 : 1.0)
+                        Spacer()
+                        Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 3, text: self.questionForSeries.trayCardName[3])
+                            .frame(width: geo.size.height/6 * 0.6
+                                , height: geo.size.height/6)
+                            .overlay(GeometryReader { geo2 in
+                                Color.clear
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .onAppear{
+                                                self.trayCardsFrames[3] = geo2.frame(in: .global)
+                                        }
+                                    })
+                            })
+                            .zIndex(self.cardIsBeingMoved[3] ? 1.0 : 0.5)
+                            .opacity(self.trayCardDropped[3] ? 0.0 : 1.0)
+                               
+                       
+                        Spacer()
                     }
+                    .padding()
+
+                    ZStack{
+                        Rectangle()
+                            .fill(ColorReference.specialGray)
+                            .frame(width: geo.size.width, height: geo.size.height/7
+                                
+                        )
+                        HStack(alignment: .bottom){
+                            Spacer()
+                            VStack{
+                                ZStack{
+                                    Circle()
+                                        .foregroundColor(ColorReference.specialOrange)
+                                        .frame(width: geo.size.height/12
+                                            , height: geo.size.height/12)
+                                    
+                                    Text("\(self.timeRemaining)")
+                                        .onReceive(self.timer) { _ in
+                                            if self.timeRemaining  > 0 && self.quizStarted {
+                                                self.timeRemaining -= 1
+                                            }else if self.timeRemaining  == 0 && self.quizStarted {
+                                               // self.cardAnimation()
+                                                self.timer0 = true
+                                            }
+                                    }
+                                    .background(ColorReference.specialOrange)
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                }
+                                Text("Time left")
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                            }
+                            Spacer()
+                            VStack {
+                                Button(action: {
+                                    print()
+                                }){
+                                    Image("FinalCoin").renderingMode(.original)
+                                        .resizable()
+                                        .frame(width: geo.size.height/12
+                                            , height: geo.size.height/12)
+                                }
+                                
+                                Text("\(self.coins) coins")
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                            }
+                            Spacer()
+                            VStack{
+                                ZStack{
+                                    Circle()
+                                        .foregroundColor(ColorReference.specialOrange)
+                                        .frame(width: geo.size.height/12
+                                            , height: geo.size.height/12)
+                                    Text("\(self.points)")
+                                        .background(ColorReference.specialOrange)
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                }
+                                Text("Score")
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                            }
+                            Spacer()
+                        }
+                    }.padding()
                 }
             }
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
+            .navigationBarTitle("What is the right order?", displayMode: .inline)
         }
         .navigationBarBackButtonHidden(true)
         .navigationViewStyle(StackNavigationViewStyle())
-        
     }
     func cardDropped(location: CGPoint, trayIndex: Int, cardAnswer: String) {
         if let match = cardFrames.firstIndex(where: {

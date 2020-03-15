@@ -35,6 +35,8 @@ struct ContentView: View {
     @State private var firstLevelFinished = false
     @State private var numberCardsDisplayed = false
     @State private var timer0 = false
+    @State private var coins = UserDefaults.standard.integer(forKey: "coins")
+    @State private var points = UserDefaults.standard.integer(forKey: "points")
     let timer = Timer.publish(every: 1, on: .main, in: .default).autoconnect()
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
@@ -52,7 +54,7 @@ struct ContentView: View {
         ]
         // this only applies to small titles
         appearance.titleTextAttributes = [
-            .font : UIFont.systemFont(ofSize: 30),
+            .font : UIFont.systemFont(ofSize: 29),
             NSAttributedString.Key.foregroundColor : UIColor.white
         ]
         //In the following two lines you make sure that you apply the style for good
@@ -88,7 +90,6 @@ struct ContentView: View {
                                     .cornerRadius(20)
                                     .padding()
                                 if self.answerIsGood && self.cardDropped{
-                                    
                                     Text(self.messageAfterAnswer)
                                         .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                         .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialGreen : .clear)
@@ -98,12 +99,11 @@ struct ContentView: View {
                                         .frame(width: geo.size.height/8.0, height:  geo.size.height/8.0)
                                         .animation(.easeOut(duration: 2.0))
                                         .onAppear {
-                                            print("timer")
+
                                             self.percentComplete = 1.0
                                             self.cardDescription = ""
                                             self.numberCardsDisplayed = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                                                
                                                 self.cardDescription = "Cards left: \(9 - self.questionNumber)"
                                             }
                                     }
@@ -124,6 +124,7 @@ struct ContentView: View {
                             }
                         }
                         HStack {
+                            Spacer()
                             Card(onEnded: self.cardDropped, index: 0, text: self.cardInfo.info[self.questionNumber].card0Name)
                                 .frame(width: geo.size.height/5 * 0.6
                                     , height: geo.size.height/5)
@@ -135,12 +136,21 @@ struct ContentView: View {
                                         .onAppear{
                                             self.cardFrames[0] = geo2.frame(in: .global)
                                             self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
-                                            print(self.sequence.sequence)
+                                            if !(self.userAlreadyExist(coins: "coins")){
+                                                self.coins = 20
+                                                self.points = 0
+                                                UserDefaults.standard.set(self.coins, forKey: "coins")
+                                                UserDefaults.standard.set(self.points, forKey: "points")
+                                                print("initialCoins \(self.coins)")
+                                            }
+                                            self.coins = UserDefaults.standard.integer(forKey: "coins")
+                                            print("coins: \(self.coins)")
                                     }
                                 })
                                 .opacity(self.answerIsGood && self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
                                 .offset(x: self.answerIsGood && self.cardSelected   ? self.xOffset0 : -self.badAnsweOffset)
                                 .addBorder(!self.answerIsGood ? Color.white : Color.clear, cornerRadius: 10)
+                            Spacer()
                             Card(onEnded: self.cardDropped, index: 1, text:  self.cardInfo.info[self.questionNumber].card1Name)
                                 .frame(width: geo.size.height/5 * 0.6
                                     , height: geo.size.height/5)
@@ -155,7 +165,7 @@ struct ContentView: View {
                                 })
                                 .offset(x: self.answerIsGood && self.cardSelected   ? 0 : self.badAnsweOffset)
                                 .padding()
-                            
+                            Spacer()
                             Card(onEnded: self.cardDropped, index: 2, text:  self.cardInfo.info[self.questionNumber].card2Name)
                                 .frame(width: geo.size.height/5 * 0.6
                                     , height: geo.size.height/5)
@@ -171,6 +181,7 @@ struct ContentView: View {
                                 .opacity(self.answerIsGood && !self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
                                 .offset(x: self.answerIsGood && self.cardSelected ? self.xOffset2 : self.badAnsweOffset)
                                 .addBorder(!self.answerIsGood ? Color.white : Color.clear, cornerRadius: 10)
+                            Spacer()
                         }
                         HStack {
                             Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 0, text:  self.cardInfo.info[self.questionNumber].trayCard0Name)
@@ -184,7 +195,9 @@ struct ContentView: View {
                         ZStack{
                             Rectangle()
                                 .fill(ColorReference.specialGray)
-                                .frame(width: geo.size.width, height: geo.size.height/7)
+                                .frame(width: geo.size.width, height: geo.size.height/7
+                                    
+                            )
                             HStack(alignment: .bottom){
                                 Spacer()
                                 VStack{
@@ -207,6 +220,7 @@ struct ContentView: View {
                                         .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                     }
                                     Text("Time left")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
                                 }
                                 Spacer()
                                 VStack {
@@ -218,7 +232,9 @@ struct ContentView: View {
                                             .frame(width: geo.size.height/12
                                                 , height: geo.size.height/12)
                                     }
-                                    Text("Buy Coins")
+                                    
+                                    Text("\(self.coins) coins")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
                                 }
                                 Spacer()
                                 VStack{
@@ -227,11 +243,12 @@ struct ContentView: View {
                                             .foregroundColor(ColorReference.specialOrange)
                                             .frame(width: geo.size.height/12
                                                 , height: geo.size.height/12)
-                                        Text("10")
+                                        Text("\(self.points)")
                                             .background(ColorReference.specialOrange)
                                             .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                     }
                                     Text("Score")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
                                 }
                                 Spacer()
                             }
@@ -256,10 +273,14 @@ struct ContentView: View {
                 if  self.eventTiming.timing[self.questionNumber].eventIsEarlier{
                     answerIsGood = true
                     playSound(sound: "Incoming Text 01", type: "wav")
+                    self.points += 1
+                    UserDefaults.standard.set(self.points, forKey: "points")
                     withAnimation(Animation.easeInOut(duration: 2).delay(1)) {
                         self.xOffset0 = centerCardPosition - rightCardPosition
                     }
                 }else{
+                    self.coins -= 1
+                    UserDefaults.standard.set(self.coins, forKey: "coins")
                     answerIsGood = false
                     playSound(sound: "Error Warning", type: "wav")
                 }
@@ -267,10 +288,14 @@ struct ContentView: View {
                 if !self.eventTiming.timing[self.questionNumber].eventIsEarlier {
                     answerIsGood = true
                     playSound(sound: "Incoming Text 01", type: "wav")
+                    self.points += 1
+                    UserDefaults.standard.set(self.points, forKey: "points")
                     withAnimation(Animation.easeInOut(duration: 2.0).delay(1.0)) {
                         self.xOffset2 = centerCardPosition - leftCardPosition
                     }
                 }else{
+                    self.coins -= 1
+                    UserDefaults.standard.set(self.coins, forKey: "coins")
                     answerIsGood = false
                     playSound(sound: "Error Warning", type: "wav")
                 }
@@ -321,6 +346,10 @@ struct ContentView: View {
                 if self.questionNumber == self.eventTiming.timing.count - 1 {
                     self.firstLevelFinished = true
                     self.quizStarted = false
+                    self.coins += 2
+                    self.points += 5
+                    UserDefaults.standard.set(self.coins, forKey: "coins")
+                    UserDefaults.standard.set(self.points, forKey: "points")
                     playSound(sound: "music_harp_gliss_up", type: "wav")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
                         self.nextViewPresent = true
@@ -356,11 +385,13 @@ struct ContentView: View {
     }
     func getFont(tryAgain: Bool) -> CGFloat {
         if tryAgain {
-            print("getting fonts")
             return fonts.finalBigFont
         }else{
             return fonts.fontDimension
         }
+    }
+    func userAlreadyExist(coins: String) -> Bool {
+        return UserDefaults.standard.object(forKey: coins) != nil
     }
 }
 
