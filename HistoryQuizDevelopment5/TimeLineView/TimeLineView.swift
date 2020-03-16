@@ -53,7 +53,7 @@ struct TimeLineView: View {
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-                
+
                 VStack {
                     NavigationLink(destination: QuizView(), isActive: self.$goQuizView){
                         Text("")
@@ -102,7 +102,7 @@ struct TimeLineView: View {
                                           }
                                       })
                               })
-                              .opacity(self.cardWasDropped[2] ? 1.0 : 0.0)
+                              .opacity(self.cardWasDropped[1] ? 1.0 : 0.0)
                               .addBorder(Color.white, cornerRadius: 10)
                          Spacer()
                         Card(onEnded: self.cardDropped, index: 2, text: self.cardText[2])
@@ -118,7 +118,7 @@ struct TimeLineView: View {
                                           }
                                       })
                               })
-                              .opacity(self.cardWasDropped[3] ? 1.0 : 0.0)
+                              .opacity(self.cardWasDropped[2] ? 1.0 : 0.0)
                               .addBorder(Color.white, cornerRadius: 10)
                          Spacer()
                         Card(onEnded: self.cardDropped, index: 3, text: self.cardText[3])
