@@ -65,8 +65,6 @@ struct Card: View {
                             self.touching = false
                             self.onEnded?($0.location, self.index, self.text)
                             self.dragAmount = .zero
-                           // self.gradient = Gradient(colors: [.clear, .clear])
-                           // self.text = ""
                         }else{
                             withAnimation(.spring()){
                                 self.dragAmount = .zero

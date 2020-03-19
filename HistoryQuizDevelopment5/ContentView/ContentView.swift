@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     let fonts = FontsAndConstraintsOptions()
@@ -35,6 +36,7 @@ struct ContentView: View {
     @State private var firstLevelFinished = false
     @State private var numberCardsDisplayed = false
     @State private var timer0 = false
+    @State var orientation: UIDeviceOrientation = UIDevice.current.orientation
     @State private var coins = UserDefaults.standard.integer(forKey: "coins")
     @State private var points = UserDefaults.standard.integer(forKey: "points")
     let timer = Timer.publish(every: 1, on: .main, in: .default).autoconnect()
@@ -99,7 +101,7 @@ struct ContentView: View {
                                         .frame(width: geo.size.height/8.0, height:  geo.size.height/8.0)
                                         .animation(.easeOut(duration: 2.0))
                                         .onAppear {
-
+                                            
                                             self.percentComplete = 1.0
                                             self.cardDescription = ""
                                             self.numberCardsDisplayed = true
@@ -134,8 +136,6 @@ struct ContentView: View {
                                     Color.clear
                                         .coordinateSpace(name: "RightCard")
                                         .onAppear{
-                                            self.cardFrames[0] = geo2.frame(in: .global)
-                                            self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
                                             if !(self.userAlreadyExist(coins: "coins")){
                                                 self.coins = 20
                                                 self.points = 0
@@ -145,6 +145,16 @@ struct ContentView: View {
                                             }
                                             self.coins = UserDefaults.standard.integer(forKey: "coins")
                                             print("coins: \(self.coins)")
+                                    }
+                                    .onReceive(NotificationCenter.Publisher(center: .default, name: UIDevice.orientationDidChangeNotification)) { _ in
+                                        self.orientation = UIDevice.current.orientation
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                            self.cardFrames[0] = geo2.frame(in: .global)
+                                            self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
+                                            print(self.cardFrames[0].midX)
+                                            print(self.cardFrames[0].midY)
+                                            
+                                        }
                                     }
                                 })
                                 .opacity(self.answerIsGood && self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
@@ -158,9 +168,13 @@ struct ContentView: View {
                                 .coordinateSpace(name: "CenterCard")
                                 .allowsHitTesting(false).overlay(GeometryReader { geo2 in
                                     Color.clear
-                                        .onAppear{
-                                            self.cardFrames[1] = geo2.frame(in: .global)
-                                            self.centerCardPosition = geo2.frame(in: .named("CenterCard")).midX
+                                        .onReceive(NotificationCenter.Publisher(center: .default, name: UIDevice.orientationDidChangeNotification)) { _ in
+                                            self.orientation = UIDevice.current.orientation
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                                self.cardFrames[1] = geo2.frame(in: .global)
+                                                self.centerCardPosition = geo2.frame(in: .named("CenterCard")).midX
+                                                
+                                            }
                                     }
                                 })
                                 .offset(x: self.answerIsGood && self.cardSelected   ? 0 : self.badAnsweOffset)
@@ -173,9 +187,13 @@ struct ContentView: View {
                                 .coordinateSpace(name: "LeftCard")
                                 .allowsHitTesting(false).overlay(GeometryReader { geo2 in
                                     Color.clear
-                                        .onAppear{
-                                            self.cardFrames[2] = geo2.frame(in: .global)
-                                            self.leftCardPosition = geo2.frame(in: .named("LeftCard")).midX
+                                        .onReceive(NotificationCenter.Publisher(center: .default, name: UIDevice.orientationDidChangeNotification)) { _ in
+                                            self.orientation = UIDevice.current.orientation
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                                self.cardFrames[2] = geo2.frame(in: .global)
+                                                self.leftCardPosition = geo2.frame(in: .named("LeftCard")).midX
+                                                
+                                            }
                                     }
                                 })
                                 .opacity(self.answerIsGood && !self.self.eventTiming.timing[self.questionNumber].eventIsEarlier ? 1.0 : 0.0)
@@ -196,7 +214,6 @@ struct ContentView: View {
                             Rectangle()
                                 .fill(ColorReference.specialGray)
                                 .frame(width: geo.size.width, height: geo.size.height/7
-                                    
                             )
                             HStack(alignment: .bottom){
                                 Spacer()
@@ -267,6 +284,8 @@ struct ContentView: View {
         if let match = cardFrames.firstIndex(where: {
             $0.contains(location)
         }) {
+            print("x: \(location.x)")
+            print("y: \(location.y)")
             cardDropped = true
             switch match {
             case 0:
@@ -308,7 +327,9 @@ struct ContentView: View {
     func cardMoved(location: CGPoint, letter: String) -> DragState {
         if let match = cardFrames.firstIndex(where: {
             $0.contains(location)
+            
         }) {
+            
             if match == 0 || match == 2 {
                 return .good
             }else{
