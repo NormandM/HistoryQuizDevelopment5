@@ -39,7 +39,7 @@ struct ContentView: View {
     @State var orientation: UIDeviceOrientation = UIDevice.current.orientation
     @State private var coins = UserDefaults.standard.integer(forKey: "coins")
     @State private var points = UserDefaults.standard.integer(forKey: "points")
-    let timer = Timer.publish(every: 1, on: .main, in: .default).autoconnect()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @ObservedObject var eventTiming = EventTiming()
     @ObservedObject var cardInfo = CardInfo()
     let sequence = Sequence()
@@ -82,7 +82,7 @@ struct ContentView: View {
                             ZStack {
                                 Text(self.cardDescription)
                                     .lineLimit(100)
-                                    .scaledFont(name: "Helvetica Neue", size: self.getFont(tryAgain: self.tryAgain || self.numberCardsDisplayed))
+                                    .scaledFont(name: "Helvetica Neue", size: self.getFont(tryAgain: self.tryAgain))
                                     .foregroundColor(.black)
                                     .padding()
                                     .frame(width: geo.size.width/1.0
@@ -93,7 +93,7 @@ struct ContentView: View {
                                     .padding()
                                 if self.answerIsGood && self.cardDropped{
                                     Text(self.messageAfterAnswer)
-                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                        .scaledFont(name: "Helvetica Neue", size: self.getFont(tryAgain: self.tryAgain))
                                         .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialGreen : .clear)
                                     Ellipse()
                                         .trim(from: 0, to: self.percentComplete)
@@ -107,11 +107,12 @@ struct ContentView: View {
                                             self.numberCardsDisplayed = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                                                 self.cardDescription = "Cards left: \(9 - self.questionNumber)"
+                                                
                                             }
                                     }
                                 }else if !self.answerIsGood && self.cardDropped{
                                     Text(self.messageAfterAnswer)
-                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                        .scaledFont(name: "Helvetica Neue", size: self.getFont(tryAgain: self.tryAgain))
                                         .foregroundColor(self.percentComplete == 1.0 ? ColorReference.specialRed : .clear)
                                     Ellipse()
                                         .trim(from: 0, to: self.percentComplete)
@@ -141,19 +142,14 @@ struct ContentView: View {
                                                 self.points = 0
                                                 UserDefaults.standard.set(self.coins, forKey: "coins")
                                                 UserDefaults.standard.set(self.points, forKey: "points")
-                                                print("initialCoins \(self.coins)")
                                             }
                                             self.coins = UserDefaults.standard.integer(forKey: "coins")
-                                            print("coins: \(self.coins)")
                                     }
                                     .onReceive(NotificationCenter.Publisher(center: .default, name: UIDevice.orientationDidChangeNotification)) { _ in
                                         self.orientation = UIDevice.current.orientation
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                             self.cardFrames[0] = geo2.frame(in: .global)
                                             self.rightCardPosition = geo2.frame(in: .named("RightCard")).midX
-                                            print(self.cardFrames[0].midX)
-                                            print(self.cardFrames[0].midY)
-                                            
                                         }
                                     }
                                 })
@@ -284,8 +280,6 @@ struct ContentView: View {
         if let match = cardFrames.firstIndex(where: {
             $0.contains(location)
         }) {
-            print("x: \(location.x)")
-            print("y: \(location.y)")
             cardDropped = true
             switch match {
             case 0:
@@ -353,6 +347,7 @@ struct ContentView: View {
         self.cardDescription = "Cards left: \(9 - self.questionNumber)"
     }
     func cardAnimation () {
+         self.tryAgain = true
         if answerIsGood && !timer0{
             self.messageAfterAnswer = "Great!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -364,7 +359,8 @@ struct ContentView: View {
                 self.xOffset0 = 0
                 self.xOffset2 = 0
                 self.percentComplete = 0
-                if self.questionNumber == self.eventTiming.timing.count - 1 {
+               // if self.questionNumber == self.eventTiming.timing.count - 1 {
+                if self.questionNumber == 2 {
                     self.firstLevelFinished = true
                     self.quizStarted = false
                     self.coins += 2
@@ -377,7 +373,6 @@ struct ContentView: View {
                         self.timer.upstream.connect().cancel()
                     }
                 }
-                // if self.questionNumber == 1 {self.nextViewPresent = true}
             }
         }else{
             self.answerIsGood = false
@@ -393,7 +388,6 @@ struct ContentView: View {
                 self.badAnsweOffset = 0
                 self.xOffset0 = 0
                 self.xOffset2 = 0
-                self.tryAgain = true
                 self.quizStarted = false
                 self.timeRemaining = 120
                 if self.timer0 {
