@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E04526E242941FF00B2A2B1 /* 404015__paul-sinnett__card.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8E04526D242941FF00B2A2B1 /* 404015__paul-sinnett__card.wav */; };
 		8E420CAA24046BA200634591 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CA924046BA200634591 /* AppDelegate.swift */; };
 		8E420CAC24046BA200634591 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CAB24046BA200634591 /* SceneDelegate.swift */; };
 		8E420CAF24046BA200634591 /* HistoryQuizDevelopment5.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8E420CAD24046BA200634591 /* HistoryQuizDevelopment5.xcdatamodeld */; };
@@ -58,6 +59,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8E04526D242941FF00B2A2B1 /* 404015__paul-sinnett__card.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "404015__paul-sinnett__card.wav"; sourceTree = "<group>"; };
 		8E420CA624046BA200634591 /* HistoryQuizDevelopment5.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HistoryQuizDevelopment5.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E420CA924046BA200634591 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E420CAB24046BA200634591 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				8E420CF024046C3300634591 /* PlaySound.swift */,
+				8E04526D242941FF00B2A2B1 /* 404015__paul-sinnett__card.wav */,
 				8E8A6992241ADCD40027C372 /* Incoming Text 01.wav */,
 				8E420CF324046C3800634591 /* music_harp_gliss_up.wav */,
 				8E420D34240860FB00634591 /* Error Warning.wav */,
@@ -359,6 +362,7 @@
 			files = (
 				8E420CE324046C0300634591 /* Revolutions.plist in Resources */,
 				8E420CB924046BAB00634591 /* LaunchScreen.storyboard in Resources */,
+				8E04526E242941FF00B2A2B1 /* 404015__paul-sinnett__card.wav in Resources */,
 				8E420CB624046BAB00634591 /* Preview Assets.xcassets in Resources */,
 				8E8A6993241ADCD50027C372 /* Incoming Text 01.wav in Resources */,
 				8E420D4E241059AF00634591 /* InventionsCardData.plist in Resources */,

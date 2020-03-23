@@ -70,9 +70,10 @@ struct ContentView: View {
         NavigationView {
             GeometryReader { geo in
                 ZStack {
-                    Image("success")
+                    Image("Pouce haut2")
                         .resizable()
                         .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
+                        .cornerRadius(25)
                         .opacity(self.firstLevelFinished ? 1.0 : 0.0)
                     VStack() {
                         NavigationLink(destination: TimeLineView(), isActive: self.$nextViewPresent){
@@ -266,7 +267,7 @@ struct ContentView: View {
                                 Spacer()
                             }
                         }
-                    }.blur(radius: self.firstLevelFinished ?  75 : 0.0)
+                    }.blur(radius: self.firstLevelFinished ?  90 : 0.0)
                 }
             }
             .background(ColorReference.specialGreen)
@@ -361,7 +362,9 @@ struct ContentView: View {
                 self.percentComplete = 0
                // if self.questionNumber == self.eventTiming.timing.count - 1 {
                 if self.questionNumber == 2 {
-                    self.firstLevelFinished = true
+                    withAnimation(.linear(duration: 2)){
+                        self.firstLevelFinished = true
+                    }
                     self.quizStarted = false
                     self.coins += 2
                     self.points += 5
