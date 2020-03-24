@@ -76,33 +76,45 @@ struct TimeLineView: View {
                     }else if self.timer0 || (self.allCardsDropped && !self.answerIsGood){
                         Image("Pouce bas")
                         .resizable()
-                           
                         .cornerRadius(25)
                             .opacity(1.0)
                         .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
-                        VStack {
-                            Button(action: {
-                                print()
-                            }){
-                                Image("FinalCoin").renderingMode(.original)
-                                    .resizable()
-                                    
-                                    .frame(width: geo.size.height/12
-                                        , height: geo.size.height/12)
-                                    .offset(x: -geo.size.width/4, y: geo.size.height/10)
+                        HStack {
+                            VStack {
+                                Text("Back to level 1")
+                                    .foregroundColor(.white)
+                                Button(action: {
+                                    print()
+                                }){
+                                    Image("0Coin").renderingMode(.original)
+                                        .resizable()
+                                        .frame(width: geo.size.height/12
+                                            , height: geo.size.height/12)
+                                        
+                                }
+                                Text("coins")
+                                    .foregroundColor(.white)
+                                
                             }
-                            .zIndex(1.0)
-                            Button(action: {
-                                print()
-                            }){
-                                Image("FinalCoin").renderingMode(.original)
-                                    .resizable()
-                                    .frame(width: geo.size.height/12
-                                        , height: geo.size.height/12)
-                                    .offset(x: -geo.size.width/4, y: geo.size.height/10)
-                                    .zIndex(1.0)
+                            .offset(x: -geo.size.height/16, y: geo.size.height/9)
+                            
+                            VStack {
+                                Text("Stay on level 2")
+                                     .foregroundColor(.white)
+                                 Button(action: {
+                                     print()
+                                 }){
+                                     Image("5Coin").renderingMode(.original)
+                                         .resizable()
+                                         .frame(width: geo.size.height/12
+                                             , height: geo.size.height/12)
+                                         
+                                 }
+                                Text("coins")
+                                    .foregroundColor(.white)
                             }
-                            .zIndex(1.0)
+                            .offset(x: geo.size.height/16 , y: geo.size.height/9)
+ 
 
                         }
                         
@@ -397,7 +409,7 @@ struct TimeLineView: View {
                             }
                         }.padding()
                         .padding()
-                    }.blur(radius: self.secondLevelFinished || (self.timer0 || (self.allCardsDropped && !self.answerIsGood))  ?  75 : 0.0)
+                    }.blur(radius: self.secondLevelFinished || (self.timer0 || (self.allCardsDropped && !self.answerIsGood))  ?  90 : 0.0)
                 }
             }
             .background(ColorReference.specialGreen)
