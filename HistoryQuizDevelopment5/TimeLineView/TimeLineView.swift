@@ -37,7 +37,6 @@ struct TimeLineView: View {
     @State private var secondLevelFinished = false
     @State private var numberToFinish = 0
     @State private var secondLevelWrong = false
-    
     @State private var coins = UserDefaults.standard.integer(forKey: "coins")
     @State private var points = UserDefaults.standard.integer(forKey: "points")
     private let timer2 = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -142,6 +141,7 @@ struct TimeLineView: View {
                         NavigationLink(destination: QuizView(), isActive: self.$goQuizView){
                             Text("")
                         }
+                        .padding()
                         HStack {
                             ZStack {
                                 Text(self.cardDescription)
@@ -418,8 +418,9 @@ struct TimeLineView: View {
                                 }
                                 Spacer()
                             }
-                        }.padding()
-                            .padding()
+                        }
+                        .padding()
+                        .padding()
                     }.blur(radius: self.secondLevelFinished || (self.timer0 || self.secondLevelWrong)  ?  75 : 0.0)
                         .zIndex(-0.5)
                 }

@@ -9,9 +9,10 @@
 import SwiftUI
 
 struct QuizView: View {
+    let fonts = FontsAndConstraintsOptions()
     @State private var cardFrames = [CGRect](repeating: .zero, count: 4)
     @State private var trayCardsFrames = [CGRect](repeating: .zero, count: 4)
-       @State private var cardGood = [false, false, false]
+    @State private var cardGood = [false, false, false]
     @State private var trayCardDropped = [false, false, false]
     @State private var trayCardText = ""
     @State private var cardWasDropped = [false, false, false]
@@ -19,20 +20,52 @@ struct QuizView: View {
     @State private var cardText = ["", "", "", "", ""]
     @State private var cardIsBeingMoved = [true, true, true]
     @State private var count = 0
+    private let timer2 = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var cardIndex = 0
+    @State private var timeRemaining = 120
+    @State private var quizStarted = false
     @ObservedObject var quizData = QuizData()
-    
+    @State private var timer0 = false
+    @State private var coins = UserDefaults.standard.integer(forKey: "coins")
+    @State private var points = UserDefaults.standard.integer(forKey: "points")
+    init() {
+        // this is not the same as manipulating the proxy directly
+        let appearance = UINavigationBarAppearance()
+        // this overrides everything you have set up earlier.
+        appearance.configureWithTransparentBackground()
+        
+        //           // this only applies to big titles
+        appearance.largeTitleTextAttributes = [
+            .font : UIFont.systemFont(ofSize: 20),
+            NSAttributedString.Key.foregroundColor : UIColor.white
+        ]
+        appearance.titleTextAttributes = [
+            .font : UIFont.systemFont(ofSize: 29),
+            NSAttributedString.Key.foregroundColor : UIColor.white
+        ]
+        //In the following two lines you make sure that you apply the style for good
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().standardAppearance = appearance
+        // This property is not present on the UINavigationBarAppearance
+        // object for some reason and you have to leave it til the end
+        UINavigationBar.appearance().tintColor = .white
+    }
     var body: some View {
         NavigationView {
+            
             GeometryReader { geo in
                 VStack {
+                    Spacer()
                     HStack {
-                        Text(self.quizData.questions[0])
-                            .padding()
                         Spacer()
+                        Text(self.quizData.questions[0])
+                            .frame(width: geo.size.width/1.5, height: geo.size.height/15, alignment: .leading)
+                            .foregroundColor(.white)
+
                         Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 0, text: self.cardText[0])
-                            .frame(width: geo.size.height/6 * 0.6
-                                , height: geo.size.height/6)
+                            .frame(width: geo.size.height/7
+                                * 0.6
+                                , height: geo.size.height/7)
                             .allowsHitTesting(false)
                             .overlay(GeometryReader { geo2 in
                                 Color.clear
@@ -45,16 +78,17 @@ struct QuizView: View {
                             })
                             .opacity(self.cardWasDropped[0] ? 1.0 : 0.0)
                             .addBorder(Color.white, cornerRadius: 10)
-                        .padding()
-                        
-                    }
-                    HStack {
-                        Text(self.quizData.questions[1])
-                            .padding()
                         Spacer()
+                    }
+                    .padding(.bottom)
+                    HStack {
+                        Spacer()
+                        Text(self.quizData.questions[1])
+                            .frame(width: geo.size.width/1.5, height: geo.size.height/15, alignment: .leading)
+                            .foregroundColor(.white)
                         Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 1, text: self.cardText[1])
-                            .frame(width: geo.size.height/6 * 0.6
-                                , height: geo.size.height/6)
+                            .frame(width: geo.size.height/7 * 0.6
+                                , height: geo.size.height/7)
                             .allowsHitTesting(false)
                             .overlay(GeometryReader { geo2 in
                                 Color.clear
@@ -67,16 +101,18 @@ struct QuizView: View {
                             })
                             .opacity(self.cardWasDropped[1] ? 1.0 : 0.0)
                             .addBorder(Color.white, cornerRadius: 10)
-                        .padding()
-                        
-                    }
-                    HStack {
-                        Text(self.quizData.questions[2])
-                            .padding()
+    
                         Spacer()
+                    }
+                    .padding(.bottom)
+                    HStack {
+                        Spacer()
+                        Text(self.quizData.questions[2])
+                            .frame(width: geo.size.width/1.5, height: geo.size.height/15, alignment: .leading)
+                            .foregroundColor(.white)
                         Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed ,index: 2, text: self.cardText[2])
-                            .frame(width: geo.size.height/6 * 0.6
-                                , height: geo.size.height/6)
+                            .frame(width: geo.size.height/7 * 0.6
+                                , height: geo.size.height/7)
                             .allowsHitTesting(false)
                             .overlay(GeometryReader { geo2 in
                                 Color.clear
@@ -89,38 +125,131 @@ struct QuizView: View {
                             })
                             .opacity(self.cardWasDropped[2] ? 1.0 : 0.0)
                             .addBorder(Color.white, cornerRadius: 10)
-                        .padding()
+                        Spacer()
                         
                     }
+                    .padding(.bottom)
                     VStack {
                         HStack {
-                        ForEach(0..<3) { number in
-                            Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: number, text: self.quizData.answers[number])
-                                .frame(width: geo.size.height/6 * 0.6
-                                    , height: geo.size.height/6)
-                                .overlay(GeometryReader { geo2 in
-                                    Color.clear
-                                        .overlay(GeometryReader { geo2 in
-                                            Color.clear
-                                                .onAppear{
-                                                    self.trayCardsFrames[number] = geo2.frame(in: .global)
-                                            }
-                                        })
-                                })
+                             Spacer()
+                                Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 0, text: self.quizData.answers[0])
+                                    .frame(width: geo.size.height/7 * 0.6
+                                        , height: geo.size.height/7)
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .overlay(GeometryReader { geo2 in
+                                                Color.clear
+                                                    .onAppear{
+                                                        self.trayCardsFrames[0] = geo2.frame(in: .global)
+                                                }
+                                            })
+                                    })
+                                    .zIndex(self.cardIsBeingMoved[0] ? 1.0 : 0.5)
+                                    .opacity(self.trayCardDropped[0] ? 0.0 : 1.0)
+                                     Spacer()
+                                Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 1, text: self.quizData.answers[1])
+                                    .frame(width: geo.size.height/7 * 0.6
+                                        , height: geo.size.height/7)
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .overlay(GeometryReader { geo2 in
+                                                Color.clear
+                                                    .onAppear{
+                                                        self.trayCardsFrames[1] = geo2.frame(in: .global)
+                                                }
+                                            })
+                                    })
+                                    .zIndex(self.cardIsBeingMoved[1] ? 1.0 : 0.5)
+                                    .opacity(self.trayCardDropped[1] ? 0.0 : 1.0)
+                                     Spacer()
+                                Card(onChanged: self.cardMoved, onEnded: self.cardDropped,onChangedP: self.cardPushed, onEndedP: self.cardUnpushed, index: 2, text: self.quizData.answers[2])
+                                    .frame(width: geo.size.height/7 * 0.6
+                                        , height: geo.size.height/7)
+                                    .overlay(GeometryReader { geo2 in
+                                        Color.clear
+                                            .overlay(GeometryReader { geo2 in
+                                                Color.clear
+                                                    .onAppear{
+                                                        self.trayCardsFrames[2] = geo2.frame(in: .global)
+                                                }
+                                            })
+                                    })
+                                    .zIndex(self.cardIsBeingMoved[2] ? 1.0 : 0.5)
+                                    .opacity(self.trayCardDropped[2] ? 0.0 : 1.0)
+                                    Spacer()
+
                             
-                            .zIndex(self.cardIsBeingMoved[number] ? 1.0 : 0.5)
-                             .opacity(self.trayCardDropped[number] ? 0.0 : 1.0)
-                                
                         }
+                        .padding(.bottom)
+                        
+                        ZStack(){
+                            Rectangle()
+                                .fill(ColorReference.specialGray)
+                                .frame(width: geo.size.width, height: geo.size.height/7
+                            )
+                            HStack(alignment: .bottom){
+                                Spacer()
+                                VStack{
+                                    ZStack{
+                                        Circle()
+                                            .foregroundColor(ColorReference.specialOrange)
+                                            .frame(width: geo.size.height/12
+                                                , height: geo.size.height/12)
+                                        
+                                        Text("\(self.timeRemaining)")
+                                            .onReceive(self.timer2) { _ in
+                                                if self.timeRemaining  > 0 && self.quizStarted {
+                                                    self.timeRemaining -= 1
+                                                }else if self.timeRemaining  == 0 && self.quizStarted {
+                                                    self.timer0 = true
+                                                }
+                                        }
+                                        .background(ColorReference.specialOrange)
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                    }
+                                    Text("Time left")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                                }
+                                Spacer()
+                                VStack {
+                                    Button(action: {
+                                        print()
+                                    }){
+                                        Image("FinalCoin").renderingMode(.original)
+                                            .resizable()
+                                            .frame(width: geo.size.height/12
+                                                , height: geo.size.height/12)
+                                    }
+                                    
+                                    Text("\(self.coins) coins")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                                }
+                                Spacer()
+                                VStack{
+                                    ZStack{
+                                        Circle()
+                                            .foregroundColor(ColorReference.specialOrange)
+                                            .frame(width: geo.size.height/12
+                                                , height: geo.size.height/12)
+                                        Text("\(self.points)")
+                                            .background(ColorReference.specialOrange)
+                                            .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
+                                    }
+                                    Text("Score")
+                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                                }
+                                Spacer()
+                            }
+                        }
+                    .padding()
+                        
                         
                     }
-
-                    
-                }
                 }
             }
             .background(ColorReference.specialGreen)
             .edgesIgnoringSafeArea(.all)
+            .navigationBarTitle("What are the right dates?", displayMode: .inline)
             
         }
         .navigationBarBackButtonHidden(true)
