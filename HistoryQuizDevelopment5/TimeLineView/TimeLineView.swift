@@ -36,10 +36,13 @@ struct TimeLineView: View {
     @State private var serieNumberDisplayed = false
     @State private var secondLevelFinished = false
     @State private var numberToFinish = 0
+    @State private var secondLevelWrong = false
+    
     @State private var coins = UserDefaults.standard.integer(forKey: "coins")
     @State private var points = UserDefaults.standard.integer(forKey: "points")
     private let timer2 = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var timer0 = false
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @ObservedObject var questionForSeries = QuestionsForSeries()
     init() {
         // this is not the same as manipulating the proxy directly
@@ -67,7 +70,7 @@ struct TimeLineView: View {
         NavigationView {
             GeometryReader { geo in
                 ZStack {
-                    if self.answerIsGood  && !self.timer0{
+                    if self.secondLevelFinished  && !self.timer0{
                         Image("Pouce haut3")
                             .resizable()
                             .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
@@ -75,58 +78,70 @@ struct TimeLineView: View {
                             .opacity(self.secondLevelFinished ? 1.0 : 0.0)
                     }else if self.timer0 || (self.allCardsDropped && !self.answerIsGood){
                         Image("Pouce bas")
-                        .resizable()
-                        .cornerRadius(25)
-                            .opacity(1.0)
-                        .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
+                            .resizable()
+                            .cornerRadius(25)
+                            .opacity(self.timer0 || (self.allCardsDropped && !self.answerIsGood) ? 1.0 : 0)
+                            .frame(width: geo.size.height/2.5, height: geo.size.height/2.5)
                         HStack {
                             VStack {
                                 Text("Back to level 1")
                                     .foregroundColor(.white)
                                 Button(action: {
-                                    print()
+                                    self.presentationMode.wrappedValue.dismiss()
                                 }){
                                     Image("0Coin").renderingMode(.original)
                                         .resizable()
                                         .frame(width: geo.size.height/12
                                             , height: geo.size.height/12)
-                                        
                                 }
                                 Text("coins")
                                     .foregroundColor(.white)
-                                
                             }
                             .offset(x: -geo.size.height/16, y: geo.size.height/9)
                             
                             VStack {
                                 Text("Stay on level 2")
-                                     .foregroundColor(.white)
-                                 Button(action: {
-                                     print()
-                                 }){
-                                     Image("5Coin").renderingMode(.original)
-                                         .resizable()
-                                         .frame(width: geo.size.height/12
-                                             , height: geo.size.height/12)
-                                         
-                                 }
+                                    .foregroundColor(.white)
+                                Button(action: {
+                                    self.secondLevelFinished = false
+                                    self.timer0 = false
+                                    self.secondLevelWrong = false
+                                    self.serieNumbers = 0
+                                    self.cardDescription = "Try again"
+                                    self.messageAfterAnswer = ""
+                                    self.allCardsDropped = false
+                                    self.percentComplete = 0.0
+                                    self.quizStarted = false
+                                    self.timeRemaining = 120
+                                    for n in 0...3{
+                                        self.cardWasDropped[n] = false
+                                        self.trayCardDropped[n] = false
+                                        self.cardIsBeingMoved[n] = false
+                                        self.cardText[n] = ""
+                                    }
+                                    self.xOffset2 = 0
+                                    self.xOffset = 0
+                                    self.numberToFinish = 0
+                                    self.coins -= 5
+                                    UserDefaults.standard.set(self.coins, forKey: "coins")
+                                    
+                                }){
+                                    Image("5Coin").renderingMode(.original)
+                                        .resizable()
+                                        .frame(width: geo.size.height/12
+                                            , height: geo.size.height/12)
+                                    
+                                }
                                 Text("coins")
                                     .foregroundColor(.white)
                             }
                             .offset(x: geo.size.height/16 , y: geo.size.height/9)
- 
-
                         }
-                        
                     }
-                   
-
-
                     VStack {
                         NavigationLink(destination: QuizView(), isActive: self.$goQuizView){
                             Text("")
                         }
-                        Spacer()
                         HStack {
                             ZStack {
                                 Text(self.cardDescription)
@@ -246,10 +261,8 @@ struct TimeLineView: View {
                                 .addBorder(self.cardWasDropped[3] ? Color.clear : Color.white, cornerRadius: 10)
                                 .padding(.trailing)
                             Spacer()
-                            
                         }
                         .padding()
-                        
                         Button(action: {
                             for n in 0...3{
                                 self.cardGood[n] = false
@@ -343,8 +356,6 @@ struct TimeLineView: View {
                                 .offset(x: self.serieNumbers == 1 ? self.xOffset2 : 0)
                                 .opacity(self.trayCardDropped[3] ? 0.0 : 1.0)
                                 .padding(.trailing)
-                            
-                            
                             Spacer()
                         }
                         .padding()
@@ -408,8 +419,9 @@ struct TimeLineView: View {
                                 Spacer()
                             }
                         }.padding()
-                        .padding()
-                    }.blur(radius: self.secondLevelFinished || (self.timer0 || (self.allCardsDropped && !self.answerIsGood))  ?  90 : 0.0)
+                            .padding()
+                    }.blur(radius: self.secondLevelFinished || (self.timer0 || self.secondLevelWrong)  ?  75 : 0.0)
+                        .zIndex(-0.5)
                 }
             }
             .background(ColorReference.specialGreen)
@@ -433,7 +445,7 @@ struct TimeLineView: View {
             case 1:
                 cardText[1] = trayCardText
                 playSound(sound: "404015__paul-sinnett__card", type: "wav")
-               if trayCardText == questionForSeries.seriesInfo[serieNumbers].rightPositionCard[1]{cardGood[1] = true}
+                if trayCardText == questionForSeries.seriesInfo[serieNumbers].rightPositionCard[1]{cardGood[1] = true}
             case 2:
                 cardText[2] = trayCardText
                 playSound(sound: "404015__paul-sinnett__card", type: "wav")
@@ -450,12 +462,14 @@ struct TimeLineView: View {
             }
             
             if self.cardGood[0] && self.cardGood[1] && self.cardGood[2] && self.cardGood[3] && self.allCardsDropped{
-                 answerIsGood = true
+                answerIsGood = true
             }else if self.allCardsDropped{
-                 answerIsGood = false
+                answerIsGood = false
+                withAnimation(.linear(duration: 2.0)) {
+                    secondLevelWrong = !answerIsGood && allCardsDropped
+                }
             }
             cardAnimation()
-            
         }
     }
     func cardMoved(location: CGPoint, letter: String) -> DragState {
@@ -505,29 +519,31 @@ struct TimeLineView: View {
         }else{
             cardDescription = "Serie 2 of 2"
         }
-        
         for n in 0...3 {
             if cardText[n] == questionForSeries.seriesInfo[serieNumbers].trayCardName[0] {self.trayCardDropped[0] = true }
             if cardText[n] == questionForSeries.seriesInfo[serieNumbers].trayCardName[1] {self.trayCardDropped[1] = true }
             if cardText[n] == questionForSeries.seriesInfo[serieNumbers].trayCardName[2] {self.trayCardDropped[2] = true }
             if cardText[n] == questionForSeries.seriesInfo[serieNumbers].trayCardName[3] {self.trayCardDropped[3] = true }
             cardIsBeingMoved[n] = false
-             self.count = 0
+            self.count = 0
         }
         self.serieNumberDisplayed = true
-         tryAgain = true
+        tryAgain = true
     }
     func cardAnimation () {
         if answerIsGood  && !timer0 {
             self.messageAfterAnswer = "Great!"
-            playSound(sound: "Incoming Text 01", type: "wav")
+            playSound(sound: "chime_clickbell_octave_up", type: "mp3")
             withAnimation(.linear(duration: 3.0)) {
                 self.xOffset = 2000
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.tryAgain = true
                 if self.serieNumbers < 1 {self.serieNumbers = self.serieNumbers + 1}
-               self.numberToFinish += 1
+                self.points = UserDefaults.standard.integer(forKey: "points")
+                self.points += 1
+                UserDefaults.standard.set(self.points, forKey: "points")
+                self.numberToFinish += 1
                 for n in 0...3 {
                     self.percentComplete = 0
                     self.allCardsDropped = false
@@ -539,22 +555,22 @@ struct TimeLineView: View {
                     print()
                 }
                 if self.numberToFinish == 2 {
+                    self.points = UserDefaults.standard.integer(forKey: "points")
+                    self.points += 5
+                    UserDefaults.standard.set(self.points, forKey: "points")
                     withAnimation(.linear(duration: 2)){
                         self.secondLevelFinished  = true
-                         playSound(sound: "music_harp_gliss_up", type: "wav")
+                        playSound(sound: "music_harp_gliss_up", type: "wav")
                         
                     }
                     self.timer2.upstream.connect().cancel()
-                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
                         self.goQuizView  = true
                     }
                 }
-                
             }
-
-            
-
         }else if timer0 || allCardsDropped{
+            self.timer2.upstream.connect().cancel()
             self.answerIsGood = false
             self.messageAfterAnswer = "Sorry..."
             playSound(sound: "Error Warning", type: "wav")

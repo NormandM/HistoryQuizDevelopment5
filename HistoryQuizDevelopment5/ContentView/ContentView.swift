@@ -102,7 +102,6 @@ struct ContentView: View {
                                         .frame(width: geo.size.height/8.0, height:  geo.size.height/8.0)
                                         .animation(.easeOut(duration: 2.0))
                                         .onAppear {
-                                            
                                             self.percentComplete = 1.0
                                             self.cardDescription = ""
                                             self.numberCardsDisplayed = true
@@ -234,7 +233,7 @@ struct ContentView: View {
                                         .scaledFont(name: "Helvetica Neue", size: self.fonts.finalBigFont)
                                     }
                                     Text("Time left")
-                                        .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
+                                    .scaledFont(name: "Helvetica Neue", size: self.fonts.smallFontDimension )
                                 }
                                 Spacer()
                                 VStack {
@@ -267,7 +266,8 @@ struct ContentView: View {
                                 Spacer()
                             }
                         }
-                    }.blur(radius: self.firstLevelFinished ?  90 : 0.0)
+                    }.blur(radius: self.firstLevelFinished ?  75 : 0.0)
+                        .zIndex(-0.5)
                 }
             }
             .background(ColorReference.specialGreen)
@@ -286,7 +286,7 @@ struct ContentView: View {
             case 0:
                 if  self.eventTiming.timing[self.questionNumber].eventIsEarlier{
                     answerIsGood = true
-                    playSound(sound: "Incoming Text 01", type: "wav")
+                    playSound(sound: "chime_clickbell_octave_up", type: "mp3")
                     self.points += 1
                     UserDefaults.standard.set(self.points, forKey: "points")
                     withAnimation(Animation.easeInOut(duration: 2).delay(1)) {
@@ -301,7 +301,7 @@ struct ContentView: View {
             case 2:
                 if !self.eventTiming.timing[self.questionNumber].eventIsEarlier {
                     answerIsGood = true
-                    playSound(sound: "Incoming Text 01", type: "wav")
+                    playSound(sound: "chime_clickbell_octave_up", type: "mp3")
                     self.points += 1
                     UserDefaults.standard.set(self.points, forKey: "points")
                     withAnimation(Animation.easeInOut(duration: 2.0).delay(1.0)) {
@@ -348,7 +348,7 @@ struct ContentView: View {
         self.cardDescription = "Cards left: \(9 - self.questionNumber)"
     }
     func cardAnimation () {
-         self.tryAgain = true
+        self.tryAgain = true
         if answerIsGood && !timer0{
             self.messageAfterAnswer = "Great!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -360,9 +360,9 @@ struct ContentView: View {
                 self.xOffset0 = 0
                 self.xOffset2 = 0
                 self.percentComplete = 0
-               // if self.questionNumber == self.eventTiming.timing.count - 1 {
+                // if self.questionNumber == self.eventTiming.timing.count - 1 {
                 if self.questionNumber == 2 {
-                    withAnimation(.linear(duration: 2)){
+                    withAnimation(.linear(duration: 3)){
                         self.firstLevelFinished = true
                     }
                     self.quizStarted = false
@@ -373,6 +373,9 @@ struct ContentView: View {
                     playSound(sound: "music_harp_gliss_up", type: "wav")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
                         self.nextViewPresent = true
+                        self.firstLevelFinished = false
+                        self.questionNumber = 0
+                        self.cardDescription = "Cards left: \(9 - self.questionNumber)"
                         self.timer.upstream.connect().cancel()
                     }
                 }
